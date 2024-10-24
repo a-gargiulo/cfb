@@ -1,0 +1,7 @@
+.venv
+.DS_Store
+.clang-format
+/lib/cantera
+/build
+/bin
+

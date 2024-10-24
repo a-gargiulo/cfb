@@ -1,0 +1,98 @@
+///////////////////////////////////////////////////
+// COUNTERFLOW BURNER 
+//////////////////////////////////////////////////
+
+Pressure (atm) = 5
+Global Strain Rate (1/s) = 300
+
+Inner Nozzle Diameter (m) = 0.0065
+Nozzle Separation Distance (m) = 0.00545
+
+
+///////////////////////////////////////////////////
+// INLET
+//////////////////////////////////////////////////
+
+Reactants Temperature (K) = 300
+
+Oxidizer Core Flow Composition = O2:0.21, N2:0.78, AR:0.01
+Fuel Core Flow Composition = C2H4:0.09, N2:0.91
+
+Shroud Momentum Fraction = 1.0
+Oxidizer Shroud = N2
+Fuel Shroud = N2
+
+
+///////////////////////////////////////////////////
+// COMBUSTION
+//////////////////////////////////////////////////
+
+Reaction Mechanism = "FFCM-2.yaml"
+
+
+///////////////////
+// HEAT TRANSFER //
+///////////////////
+
+Ambient Temperature = 300
+
+Ambient Air Convective Velocity Magnitude = 0.1 
+Exhaust Gas Convective Velocity Magnitude = 5 
+
+Wall Length = 0.15
+Wall Thickness = 0.05
+
+
+/////////////////
+// CALCULATION //
+/////////////////
+
+Relative Tolerance = 1e-8
+Maximum Number of Iterations = 1000
+Initial Guess Exhaust Temperature (K) = 1000 
+
+
+////////////
+// SKETCH //
+////////////
+
+//    Exhaust
+//    @(p,Tout)
+//                Fuel + Diluent
+//       ^          @(p, Tinf)
+//       |             |
+//       |             |
+//       |        N2   |    N2 (Co-Flow, @(p, Tinf))
+//     |---|      |    |    |
+//     |   |      |    v    | 
+//     |   |      |         |
+//     |   |      v         v
+// +--------------           --------------+
+// |             | |       | |             |
+// | @(p, Tout)  | |       | |             |
+// |             | |       | |             |
+// |             | |       | |             |
+// |             | |       | |             |
+// |             | |       | |             |
+// |             | |-------| |             |~~~~~\
+// |                 / | \                 |      \   
+// |                 ***** Flame @(p, Tf)  |    Q_Loss     
+// |                 \ | /                 |      /
+// |             | |-------| |             |~~~~~/
+// |             | |       | |             |
+// |             | |       | |             |
+// |             | |       | |             |
+// |             | |       | |             |
+// |             | |       | |             |
+// |             | |       | |             |
+// +--------------           --------------+
+//                ^         ^
+//                |         |
+//                |    ^    | (Co-Flow, @(p, Tinf))
+//                |    |    |
+//               N2    |    N2
+//                     |
+//                     |
+//            Oxidizer + Diluent
+//                @(p, Tinf)
+
