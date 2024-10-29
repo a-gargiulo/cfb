@@ -13,6 +13,7 @@ Nozzle Separation Distance (m) = 0.00545
 // INLET
 //////////////////////////////////////////////////
 
+Reactants Pressure (atm) = 1
 Reactants Temperature (K) = 300
 
 Oxidizer Core Flow Composition = O2:0.21, N2:0.78, AR:0.01

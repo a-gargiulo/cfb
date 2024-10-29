@@ -66,26 +66,26 @@ bool strutil::is_digit(char ch)
 }
 
 
-std::vector<std::pair<std::string, double>> strutil::process_composition_string(const std::string& str) {
-    std::vector<std::pair<std::string, double>> speciesMap;
-    std::istringstream iss(str);
-    std::string segment;
+// std::vector<std::pair<std::string, double>> strutil::process_composition_string(const std::string& str) {
+//     std::vector<std::pair<std::string, double>> speciesMap;
+//     std::istringstream iss(str);
+//     std::string segment;
 
-    // Split the str string by commas
-    while (std::getline(iss, segment, ',')) {
-        std::istringstream segmentStream(segment);
-        std::string species;
-        double value;
+//     // Split the str string by commas
+//     while (std::getline(iss, segment, ',')) {
+//         std::istringstream segmentStream(segment);
+//         std::string species;
+//         double value;
 
-        // Split each segment by the colon to get the species and its value
-        if (std::getline(segmentStream, species, ':') && segmentStream >> value) {
-            // Remove any leading/trailing whitespace from the species string
-            species.erase(0, species.find_first_not_of(" \t"));
-            species.erase(species.find_last_not_of(" \t") + 1);
+//         // Split each segment by the colon to get the species and its value
+//         if (std::getline(segmentStream, species, ':') && segmentStream >> value) {
+//             // Remove any leading/trailing whitespace from the species string
+//             species.erase(0, species.find_first_not_of(" \t"));
+//             species.erase(species.find_last_not_of(" \t") + 1);
 
-            speciesMap.push_back({species, value});
-        }
-    }
+//             speciesMap.push_back({species, value});
+//         }
+//     }
 
-    return std::move(speciesMap);
-}
+//     return std::move(speciesMap);
+// }

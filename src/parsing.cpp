@@ -1,5 +1,5 @@
 #include <iostream>
-#include <format>
+#include <sstream>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -14,30 +14,39 @@ namespace parsing
 
 InputParser::InputParser(const std::string& fileName) : m_fileName(fileName){};
 
-bool InputParser::parse(InputData& data)
+void InputParser::parse(InputData& data, int& err) const
 {
     Logger& logger = Logger::get_instance();
 
     std::ifstream file(m_fileName);
+
     if (!file.is_open())
     {
-        logger.log(LogLevel::ERROR, std::format("Could not open {} file.", m_fileName));
-        return true;
+        std::ostringstream oss;
+        oss << "Could not open " << m_fileName << " file.";
+        logger.log(LogLevel::ERROR, oss.str());
+        err = -1;
+        return;
     }
 
-    if (read_input_file(data,file) != 0)
+    read_input_file(data, file, err);
+    if (err)
     {
-        logger.log(LogLevel::ERROR, std::format("Error while reading {}.", m_fileName));
-        return true;
+        std::ostringstream oss;
+        oss << "Error while reading " << m_fileName << ".";
+        logger.log(LogLevel::ERROR, oss.str());
+        return;
     }
+
     file.close();
 
     logger.log(LogLevel::INFO, "Input file was successfully read.");
 
-    return false; 
+    err = 0;
+    return; 
 }
 
-bool InputParser::read_input_file(InputData& data, std::ifstream& file)
+void InputParser::read_input_file(InputData& data, std::ifstream& file, int& err) const 
 {
     std::string line;
     std::string key;
@@ -62,7 +71,9 @@ bool InputParser::read_input_file(InputData& data, std::ifstream& file)
                 data[key] = value;
         }
     }
-    return 0;
+
+    err = 0;
+    return;
 }
 
 

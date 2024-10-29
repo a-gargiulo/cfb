@@ -8,18 +8,18 @@
 namespace parsing
 {
 
-using InputDataValue = std::variant<int, double, bool, std::string>;
+using InputDataValue = std::variant<double, bool, std::string>;
 using InputData = std::unordered_map<std::string, InputDataValue>;
 
 class InputParser
 {
   public:
     InputParser(const std::string& fileName);
-    bool parse(InputData& data);
+    void parse(InputData& data, int& err) const;
 
   private:
 
-    bool read_input_file(InputData& data, std::ifstream& file);
+    void read_input_file(InputData& data, std::ifstream& file, int& err) const;
 
   private:
     const std::string m_fileName;

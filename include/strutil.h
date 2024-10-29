@@ -15,7 +15,7 @@ bool is_double(const std::string& str);
 bool is_bool(const std::string& str);
 bool to_bool(const std::string& str);
 bool is_digit(char ch);
-std::vector<std::pair<std::string, double>> process_composition_string(const std::string& str);
+// std::vector<std::pair<std::string, double>> process_composition_string(const std::string& str);
 } // namespace strutil
 
 #endif // STRUTIL_H

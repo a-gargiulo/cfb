@@ -1,7 +1,7 @@
 #include "application.h"
 #include "parsing.h"
 // #include "utils.h"
-// #include "model.h"
+#include "model.h"
 #include "logging.h"
 #include <iomanip>
 #include <iostream>
@@ -16,7 +16,7 @@ Application::~Application()
     shutdown();
 }
 
-void Application::print_title()
+void Application::print_title() const
 {
     const std::string version = "1.0.1";
     const std::string author = "Aldo Gargiulo";
@@ -36,13 +36,16 @@ void Application::print_title()
 void Application::initialize()
 {
     Logger& logger = Logger::get_instance(LogLevel::DEBUG);
+    logger.log(LogLevel::DEBUG, "Logger succesfuly initialized.");
     print_title();
     m_isRunning = true;
 }
 
-bool Application::run()
+bool Application::run() const
 {
+    int err;
     Logger& logger = Logger::get_instance();
+
     parsing::InputParser parser("input.txt");
     parsing::InputData inputs;
     inputs.reserve(19);
@@ -54,33 +57,34 @@ bool Application::run()
     }
     logger.log(LogLevel::INFO, "The application was initialized successfully.");
 
-    if (!parser.parse(inputs))
+    parser.parse(inputs, err);
+    if (err)
         return true;
 
-    auto printValue = [](const std::variant<int, double, bool, std::string>& value) {
-        std::visit([](auto&& arg) {
-            std::cout << arg; // Print the actual value
-        }, value);
-    };
-
-    for (const auto& pair : inputs)
-    {
-        std::cout << "Key: " << pair.first << ", Value: ";
-        printValue(pair.second); 
-        std::cout << std::endl;
-    }
-
-
    
-    // model::Cfb cfb;
+    model::Equilibrium cfb(inputs);
     // double Texhaust = cfb.compute_exhaust_temperature(inputs);
     // std::cout << "SOLUTION: " << Texhaust << std::endl;
 
     return false;
 }
 
-void Application::shutdown()
+void Application::shutdown() const
 {
     Logger& logger = Logger::get_instance();
     logger.log(LogLevel::INFO, "Application is shutting down.");
 }
+
+
+    // auto printValue = [](const std::variant<int, double, bool, std::string>& value) {
+    //     std::visit([](auto&& arg) {
+    //         std::cout << arg;
+    //     }, value);
+    // };
+
+    // for (const auto& pair : inputs)
+    // {
+    //     std::cout << "Key: " << pair.first << ", Value: ";
+    //     printValue(pair.second); 
+    //     std::cout << std::endl;
+    // }

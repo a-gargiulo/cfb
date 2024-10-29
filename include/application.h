@@ -14,12 +14,12 @@ class Application
 
     void initialize();
 
-    bool run();
+    bool run() const;
 
-    void shutdown();
+    void shutdown() const;
 
   private:
-    void print_title();
+    void print_title() const;
 
   private:
     const std::string m_appName;
