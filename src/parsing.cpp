@@ -9,6 +9,7 @@
 // #include "utils.h"
 #include "strutil.h"
 
+
 namespace parsing
 {
 
@@ -64,11 +65,11 @@ void InputParser::read_input_file(InputData& data, std::ifstream& file, int& err
             value = strutil::trim(sv_trim.substr(sep + 1, sv_trim.size() - sep));
 
             if (strutil::is_bool(value))
-                data[key] = strutil::to_bool(value);
+                data.try_emplace(key, strutil::to_bool(value));
             else if (strutil::is_double(value))
-                data[key] = std::stod(value);
+                data.try_emplace(key, std::stod(value));
             else
-                data[key] = value;
+                data.try_emplace(key, value);
         }
     }
 

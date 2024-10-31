@@ -48,7 +48,7 @@ bool Application::run() const
 
     parsing::InputParser parser("input.txt");
     parsing::InputData inputs;
-    inputs.reserve(19);
+    inputs.reserve(20);
 
     if (!m_isRunning)
     {
@@ -63,7 +63,7 @@ bool Application::run() const
 
    
     model::Equilibrium cfb(inputs);
-    // double Texhaust = cfb.compute_exhaust_temperature(inputs);
+    cfb.compute_exhaust_thermo_state(inputs, err);
     // std::cout << "SOLUTION: " << Texhaust << std::endl;
 
     return false;

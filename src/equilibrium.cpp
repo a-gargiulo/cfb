@@ -2,42 +2,30 @@
 #include "model.h"
 #include "parsing.h"
 #include <cantera/core.h>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <variant>
 #include <vector>
 
+
 namespace model
 {
 
-Equilibrium::Equilibrium(const parsing::InputData& inputs)
+Equilibrium::Equilibrium(const parsing::InputData& inputs) : CounterflowBurner(inputs)
 {
-    auto sol = Cantera::newSolution(std::get<std::string>(inputs.at("reaction_mechanism")));
-    auto gas = sol->thermo();
-
-    size_t num_species = gas->nSpecies();
-
-    inflow.p = std::get<double>(inputs.at("reactants_pressure"));
-    inflow.T = std::get<double>(inputs.at("reactants_temperature"));
-    inflow.X.reserve(num_species);
-
-    for (size_t i = 0; i < num_species; ++i)
-    {
-        inflow.X.emplace_back(gas->speciesName(i), 0.0);
-    }
-
-    exhaust.p = std::get<double>(inputs.at("pressure"));
-    exhaust.T = 0.0;
-    exhaust.X.reserve(num_species);
-
-    for (size_t i = 0; i < num_species; ++i)
-    {
-        exhaust.X.emplace_back(gas->speciesName(i), 0.0);
-    }
 }
 
-void Equilibrium::compute_exhaust_thermo_state(const parsing::InputData& inputs, ThermoState& state, int& err)
+void Equilibrium::compute_exhaust_thermo_state(const parsing::InputData& inputs, int& err)
 {
+    std::unordered_map<std::string, double> reacts;
+    reacts.reserve(2 * NUM_EXPECTED_CORE_ELEMENTS);
+    std::string reactsStr;
+
+    std::unordered_map<std::string, double> prods;
+    prods.reserve(100);
+
+    determine_reactants_composition(inputs, reacts, reactsStr, err);
     return;
 }
 
@@ -48,10 +36,31 @@ void Equilibrium::determine_reactants_composition(const parsing::InputData& inpu
     Logger& logger = Logger::get_instance();
 
     std::vector<MoleFraction> fCore;
+    fCore.reserve(NUM_EXPECTED_CORE_ELEMENTS);
+    std::unordered_map<std::string, int> fCHO;
+    fCHO.reserve(3);
+
     std::vector<MoleFraction> oxCore;
+    oxCore.reserve(NUM_EXPECTED_CORE_ELEMENTS);
 
     std::string fCoreStr = std::get<std::string>(inputs.at("fuel_core_flow_composition"));
     std::string oxCoreStr = std::get<std::string>(inputs.at("oxidizer_core_flow_composition"));
+
+    process_composition_string(fCoreStr, fCore);
+    process_composition_string(oxCoreStr, oxCore);
+
+    if (oxCore.begin()->element != "O2")    
+    {
+        std::ostringstream errMsg;
+        errMsg << "The first species in the provided input oxidizer core flow composition is "
+               << oxCore.begin()->element
+               << ". The string must start with the oxidizer, O2, followd by all diluent species.";
+        logger.log(LogLevel::ERROR, errMsg.str());
+        err = -1;
+        return;
+    }
+
+    
 
 
 
